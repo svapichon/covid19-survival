@@ -6,7 +6,7 @@ from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
-app = Dash(__name__)
+app = Dash(__name__, external_stylesheets=[dbc.themes.CYBORG])
 server = app.server
 
 # ----------------------------------------------------------------------------
@@ -32,10 +32,8 @@ def feature_bar():
     feature_bar.update_traces(marker=dict(color='turquoise'))
     return feature_bar
 
-
-app = Dash(external_stylesheets=[dbc.themes.CYBORG])
-
 # ----------------------------------------------------------------------------
+
 
 app.layout = html.Div([
 
