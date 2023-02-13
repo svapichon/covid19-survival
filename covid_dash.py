@@ -1,12 +1,13 @@
 import pandas as pd
+import numpy as np
 import joblib
 import plotly.express as px
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
-# app = Dash(__name__)
-# server = app.server
+app = Dash(__name__)
+server = app.server
 
 # ----------------------------------------------------------------------------
 
@@ -240,10 +241,13 @@ def update_hist(feature_dropdown):
 def model_prediction(input_age, radio_sex, radio_pneu, radio_diab, radio_copd,
                      radio_asth, radio_imm, radio_htn, radio_cardio,
                      radio_obese, radio_renal, radio_smoke, radio_hosp):
-    survival_prob = model.predict_proba(
-        [[input_age, radio_sex, radio_pneu, radio_diab, radio_copd,
-          radio_asth, radio_imm, radio_htn, radio_cardio,
-          radio_obese, radio_renal, radio_smoke, radio_hosp]])
+    # prevents warning message: X does not have valid feature names...
+    X_pred = pd.DataFrame(np.array([[input_age, radio_sex, radio_pneu, radio_diab, radio_copd,
+                                     radio_asth, radio_imm, radio_htn, radio_cardio,
+                                     radio_obese, radio_renal, radio_smoke, radio_hosp]]),
+                          columns=['Age', 'Sex', 'Pneumonia', 'Diabetes', 'COPD', 'Asthma', 'Immunosuppressed',
+                                   'Hypertension', 'Cardiovascular', 'Obese', 'Chronic renal', 'Smoke', 'Hospitalized'])
+    survival_prob = model.predict_proba(X_pred)
     prediction_result = f"Probability of survival: {round(survival_prob[0,0], 3)}"
     return prediction_result
 
