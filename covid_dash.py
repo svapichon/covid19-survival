@@ -12,7 +12,7 @@ server = app.server
 
 # ----------------------------------------------------------------------------
 
-# model = joblib.load('covid_randomforest')  # load model
+model = joblib.load('covid_randomforest')  # load model
 
 covid = pd.read_csv('final_covid.csv')  # load dataset for plots
 
