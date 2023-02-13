@@ -34,7 +34,7 @@ def feature_bar():
     return feature_bar
 
 
-app = dash.Dash(external_stylesheets=[dbc.themes.CYBORG])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG])
 # ---------------------------------------------------------------
 app.layout = html.Div([
 
