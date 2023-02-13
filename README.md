@@ -1,3 +1,5 @@
 # covid19-survival
  
-https://covid19-survival-app.herokuapp.com/
+Heroku link: https://covid19-survival-app.herokuapp.com/
+
+Original dataset: https://www.kaggle.com/datasets/meirnizri/covid19-dataset
