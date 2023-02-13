@@ -1,6 +1,7 @@
 import pandas as pd
+import numpy as np
 import plotly.express as px
-
+import joblib
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -10,6 +11,8 @@ app = dash.Dash(__name__)
 server = app.server
 
 # ---------------------------------------------------------------
+model = joblib.load('covid_randomforest')  # load model
+
 covid = pd.read_csv('final_covid.csv')  # load dataset for plots
 
 
@@ -202,6 +205,36 @@ def update_hist(feature_dropdown):
                            # Hover
                            hovertemplate=x.hovertemplate.replace(x.name, legend_name[x.name])))
     return age_hist
+
+
+@app.callback(
+    Output(component_id='prediction_result', component_property='children'),
+    [Input(component_id='input_age', component_property='value'),
+     Input(component_id='radio_sex', component_property='value'),
+     Input(component_id='radio_pneu', component_property='value'),
+     Input(component_id='radio_diab', component_property='value'),
+     Input(component_id='radio_copd', component_property='value'),
+     Input(component_id='radio_asth', component_property='value'),
+     Input(component_id='radio_imm', component_property='value'),
+     Input(component_id='radio_htn', component_property='value'),
+     Input(component_id='radio_cardio', component_property='value'),
+     Input(component_id='radio_obese', component_property='value'),
+     Input(component_id='radio_renal', component_property='value'),
+     Input(component_id='radio_smoke', component_property='value'),
+     Input(component_id='radio_hosp', component_property='value')]
+)
+def model_prediction(input_age, radio_sex, radio_pneu, radio_diab, radio_copd,
+                     radio_asth, radio_imm, radio_htn, radio_cardio,
+                     radio_obese, radio_renal, radio_smoke, radio_hosp):
+    # prevents warning message: X does not have valid feature names...
+    X_pred = pd.DataFrame(np.array([[input_age, radio_sex, radio_pneu, radio_diab, radio_copd,
+                                     radio_asth, radio_imm, radio_htn, radio_cardio,
+                                     radio_obese, radio_renal, radio_smoke, radio_hosp]]),
+                          columns=['Age', 'Sex', 'Pneumonia', 'Diabetes', 'COPD', 'Asthma', 'Immunosuppressed',
+                                   'Hypertension', 'Cardiovascular', 'Obese', 'Chronic renal', 'Smoke', 'Hospitalized'])
+    survival_prob = model.predict_proba(X_pred)
+    prediction_result = f"Probability of survival: {round(survival_prob[0,0], 3)}"
+    return prediction_result
 
 # ------------------------------------------------------------------
 
